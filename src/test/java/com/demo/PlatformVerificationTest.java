@@ -35,7 +35,7 @@ class PlatformVerificationTest {
      * and the Red Hat Quarkus platform group ID.
      */
     @Test
-    void quarkusBomIsParent() throws Exception {
+    void quarkusBomIsParent() throws java.io.IOException {
         Path pom = Paths.get("pom.xml");
         String content = Files.readString(pom);
         org.junit.jupiter.api.Assertions.assertTrue(
@@ -53,7 +53,7 @@ class PlatformVerificationTest {
      * Verifies that all Spring Boot dependencies have been removed from the POM.
      */
     @Test
-    void noSpringBootDependencies() throws Exception {
+    void noSpringBootDependencies() throws java.io.IOException {
         Path pom = Paths.get("pom.xml");
         String content = Files.readString(pom);
         org.junit.jupiter.api.Assertions.assertFalse(
@@ -77,7 +77,7 @@ class PlatformVerificationTest {
      * Verifies that the Quarkus extensions are present in the POM file.
      */
     @Test
-    void quarkusExtensionsPresent() throws Exception {
+    void quarkusExtensionsPresent() throws java.io.IOException {
         Path pom = Paths.get("pom.xml");
         String content = Files.readString(pom);
         org.junit.jupiter.api.Assertions.assertTrue(
@@ -103,7 +103,7 @@ class PlatformVerificationTest {
      * Verifies that the package namespace has been migrated to com.demo
      * and legacy packages have been removed.
      */
-    void packageNamespaceIsComDemo() throws Exception {
+    void packageNamespaceIsComDemo() {
         Path srcMain = Paths.get("src", "main", "java", "com", "demo");
         org.junit.jupiter.api.Assertions.assertTrue(
                 srcMain.toFile().isDirectory(),
@@ -123,7 +123,7 @@ class PlatformVerificationTest {
      * Verifies that the Java version is set to 21 in the POM file.
      */
     @Test
-    void javaVersionIs21() throws Exception {
+    void javaVersionIs21() throws java.io.IOException {
         Path pom = Paths.get("pom.xml");
         String content = Files.readString(pom);
         org.junit.jupiter.api.Assertions.assertTrue(
@@ -136,7 +136,7 @@ class PlatformVerificationTest {
      * Verifies that the application.properties file exists in the resources directory.
      */
     @Test
-    void applicationPropertiesExists() throws Exception {
+    void applicationPropertiesExists() {
         Path props = Paths.get("src", "main", "resources", "application.properties");
         org.junit.jupiter.api.Assertions.assertTrue(
                 props.toFile().exists(), 
@@ -144,7 +144,7 @@ class PlatformVerificationTest {
     }
 
     @Test
-    void catalogEndpointPreservedInApplicationProperties() throws Exception {
+    void catalogEndpointPreservedInApplicationProperties() throws java.io.IOException {
         Path props = Paths.get("src", "main", "resources", "application.properties");
         String content = Files.readString(props);
         org.junit.jupiter.api.Assertions.assertTrue(
