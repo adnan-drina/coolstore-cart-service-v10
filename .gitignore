@@ -15,3 +15,6 @@ target/
 .project
 .settings/
 .classpath
+
+# Harness runtime — workspace-only; never commit (O-HERMNEST)
+.hermes/
