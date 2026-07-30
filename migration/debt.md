@@ -14,6 +14,10 @@ skill, better sensor) — never by weakening the sensors.
 - HOLD: supervisor-pause + debt-freeze before M5 ship; remount harvest.
 - RESOLVED 2026-07-30T21:10Z: remount 9b7e7af; freeze cleared; M5 resumed by implementing agent (O-NOWAIT).
 
-## T-005 — milestone RED
-- head: 9a16b8d
-- reason: sensor-fix committed but milestone still RED (commit reset)
+### RESOLVED archive — T-005 milestone RED (O-SFIXSCOPE / O-SONARBLEED) — 2026-07-30T23:40Z
+
+- O-SFIXSCOPE archived sfix  (Promo S1066/S2699 genuine; S5976 overclaim).
+- Remount: re-applied Promo patch + parameterized ShippingServiceTest (S5976/S2699).
+- Milestone sensor GREEN after remount commits.
+- FREEZE cleared; outer-loop resume (O-NOWAIT).
+
