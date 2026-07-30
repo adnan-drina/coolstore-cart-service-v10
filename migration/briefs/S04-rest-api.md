@@ -97,6 +97,7 @@ the target (not the legacy):
 - `CartEndpoint` — REDESIGN
   - Target: thread-safe singleton with ConcurrentHashMap for cart storage, GET returns 404 on missing cart IDs, POST validates input quantities >0 with 400 problem-detail on validation failure, POST operations are additive→quantity 4, 503 via ExceptionMapper on downstream failures
   - Must maintain session-scoped cart state while migrating from Spring session scope to Quarkus session management
+  - Session management pattern: use Quarkus session management equivalent, ensure cart state persistence across HTTP requests without data loss
   - Must preserve existing behavioral contracts from boundary tests (CartServiceBoundaryTest.java:35-46)
 
 - `JerseyConfig` — REDESIGN

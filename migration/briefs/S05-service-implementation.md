@@ -81,6 +81,7 @@ the target (not the legacy):
 
 - `ShoppingCartServiceImpl` — REDESIGN
   - Target: @ApplicationScoped CDI service with constructor injection, thread-safe ConcurrentHashMap for cart storage (replacing HashMap in line 42), compute() methods for atomic updates, no-clear-on-miss refresh guard for product cache, normalize-before-derive pricing ensuring cart totals agree with item totals
+  - Implementation pattern from S03 experience: use `map.compute(cartId, (key, existingCart) -> { ... })` for atomic cart operations, avoid synchronized blocks in favor of ConcurrentHashMap atomic methods
   - Must preserve existing numeric oracles from tests (2000.0 item total, -10.99 shipping savings) while adding thread safety for concurrent cart access
   - Must preserve cart `add()` behavior as additive — two `add(cartId, itemId, 2)` → quantity **4** after dedupe
 
