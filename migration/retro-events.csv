@@ -13,3 +13,15 @@ epoch,stage,attempt,class,action
 1785449840,m5-evaluate,1,success,commit
 1785450096,m5-ship,0,pipeline_succeeded,coolstore-cart-service-v10-push-tpjtm
 1785450096,m5-ship,0,story_gate_pass,non-deploy story
+1785451686,T-003,1,success,commit
+1785451849,T-003,0,sensor_red_post_commit,verify
+1785452014,T-003,0,style_autofix,partial
+1785453616,T-005,0,sensor_red_post_commit,verify
+1785454560,T-005,0,sfix_committed_still_red,verify
+1785454560,T-005,0,debt_recorded,milestone
+1785455166,T-007,0,already_complete,CATALOG_ENDPOINT
+1785455319,m5-evaluate,1,success,commit
+1785455532,m5-ship,0,preflight_red,round=1
+1785455693,preflightfix-r1,1,success,commit
+1785455881,m5-ship,0,pipeline_succeeded,coolstore-cart-service-v10-push-6ck9s
+1785455881,m5-ship,0,story_gate_pass,non-deploy story
