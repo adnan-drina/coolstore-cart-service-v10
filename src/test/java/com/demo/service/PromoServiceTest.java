@@ -98,7 +98,11 @@ class PromoServiceTest {
 
     @Test
     void ignoresNullCartForItemPromotions() {
+        // Should not throw exception for null cart
         service.applyCartItemPromotions(null);
+        
+        // Verify service state remains unchanged
+        assertEquals(1, service.getPromotions().size());
     }
 
     @Test
@@ -106,6 +110,9 @@ class PromoServiceTest {
         ShoppingCart cart = new ShoppingCart();
 
         service.applyCartItemPromotions(cart);
+        
+        // Verify cart state is unchanged
+        assertEquals(0, cart.getShoppingCartItemList().size());
     }
 
     @Test
@@ -166,7 +173,11 @@ class PromoServiceTest {
 
     @Test
     void ignoresNullCartForShippingPromotions() {
+        // Should not throw exception for null cart
         service.applyShippingPromotions(null);
+        
+        // Verify service state remains unchanged
+        assertEquals(1, service.getPromotions().size());
     }
 
     @Test

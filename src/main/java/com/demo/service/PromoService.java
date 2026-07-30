@@ -34,12 +34,10 @@ public class PromoService {
     }
 
     public void applyShippingPromotions(ShoppingCart shoppingCart) {
-        if (shoppingCart != null) {
-            // PROMO: if cart total is greater than 75, free shipping
-            if (shoppingCart.getCartItemTotal() >= 75) {
-                shoppingCart.setShippingPromoSavings(shoppingCart.getShippingTotal() * -1);
-                shoppingCart.setShippingTotal(0);
-            }
+        // PROMO: if cart total is greater than 75, free shipping
+        if (shoppingCart != null && shoppingCart.getCartItemTotal() >= 75) {
+            shoppingCart.setShippingPromoSavings(shoppingCart.getShippingTotal() * -1);
+            shoppingCart.setShippingTotal(0);
         }
     }
 
