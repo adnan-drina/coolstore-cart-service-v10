@@ -12,3 +12,4 @@ skill, better sensor) — never by weakening the sensors.
 - Commit ed1514f claimed CATALOG_ENDPOINT already present; props lacked it until remount 9b7e7af.
 - Probe hardened mid-run (O-AC-K8S); instance never re-queued (O-FGRETRO).
 - HOLD: supervisor-pause + debt-freeze before M5 ship; remount harvest.
+- RESOLVED 2026-07-30T21:10Z: remount 9b7e7af; freeze cleared; M5 resumed by implementing agent (O-NOWAIT).
