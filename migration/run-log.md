@@ -6,6 +6,7 @@ Appended by the Hermes orchestrator after every task (see
 | Task | Class | Attempts | Result | Files |
 |---|---|---|---|---|
 | M5 evaluate: Findings Delta Analysis | M5-evaluate | 1 | COMPLETED | migration/mta-findings-{before,after}.json |
+| T-003 | infer | 1 | COMPLETED | src/main/java/com/demo/service/CatalogService.java, src/main/resources/application.properties |
 
 ## M5 EVALUATE FINDINGS DELTA
 
