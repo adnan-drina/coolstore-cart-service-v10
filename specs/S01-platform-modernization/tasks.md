@@ -8,7 +8,7 @@
 
 Create the new package directory structure for the target namespace `com.demo` and populate with `.gitkeep` files to ensure empty directories are committable.
 
-**Finds**: springboot-parent-pom-to-quarkus-00000, springboot-di-to-quarkus-00000, springboot-web-to-quarkus-00000
+**Findings**: springboot-parent-pom-to-quarkus-00000, springboot-di-to-quarkus-00000, springboot-web-to-quarkus-00000
 
 **Owns**: Package directory structure (no legacy files, new directory creation)
 
@@ -30,7 +30,7 @@ Replace Spring Boot parent POM with Quarkus platform BOM, convert all dependenci
 
 Convert dependencies: `spring-boot-starter-web` → `quarkus-rest`, `spring-boot-starter-actuator` → `quarkus-smallrye-health`, `spring-cloud-starter-openfeign` → `quarkus-rest-client`, etc. Convert plugins: `spring-boot-maven-plugin` → `quarkus-maven-plugin`, add Compiler/Surefire/Failsafe, add native profile. Update Java version to 21.
 
-**Finds**: springboot-parent-pom-to-quarkus-00000, javaee-pom-to-quarkus-00010, javaee-pom-to-quarkus-00020, javaee-pom-to-quarkus-00030, javaee-pom-to-quarkus-00040, javaee-pom-to-quarkus-00050, javaee-pom-to-quarkus-00060, javaee-pom-to-quarkus-00080, springboot-actuator-to-quarkus-0100, springboot-di-to-quarkus-00000, springboot-metrics-to-quarkus-0100, springboot-metrics-to-quarkus-0200, springboot-plugins-to-quarkus-0000, springboot-properties-to-quarkus-00000, springboot-web-to-quarkus-00000, spring-components-00001, spring-components-00002
+**Findings**: springboot-parent-pom-to-quarkus-00000, javaee-pom-to-quarkus-00010, javaee-pom-to-quarkus-00020, javaee-pom-to-quarkus-00030, javaee-pom-to-quarkus-00040, javaee-pom-to-quarkus-00050, javaee-pom-to-quarkus-00060, javaee-pom-to-quarkus-00080, springboot-actuator-to-quarkus-0100, springboot-di-to-quarkus-00000, springboot-metrics-to-quarkus-0100, springboot-metrics-to-quarkus-0200, springboot-plugins-to-quarkus-0000, springboot-properties-to-quarkus-00000, springboot-web-to-quarkus-00000, spring-components-00001, spring-components-00002
 
 **Owns**: projects/legacy/pom.xml (complete platform modernization)
 
@@ -42,7 +42,7 @@ Convert dependencies: `spring-boot-starter-web` → `quarkus-rest`, `spring-boot
 
 Migrate configuration from legacy `/projects/legacy/src/main/resources/application.properties` to new location with Quarkus-compatible keys. Preserve `CATALOG_ENDPOINT` environment variable configuration.
 
-**Finds**: springboot-properties-to-quarkus-00000, demo-env-integration-00001
+**Findings**: springboot-properties-to-quarkus-00000, demo-env-integration-00001
 
 ---
 
@@ -52,7 +52,7 @@ Migrate configuration from legacy `/projects/legacy/src/main/resources/applicati
 
 Update Maven coordinates and Java package imports from `com.redhat.coolstore` to `com.demo` throughout the project structure.
 
-**Finds**: springboot-parent-pom-to-quarkus-00000 (package mapping from migration.yaml)
+**Findings**: springboot-parent-pom-to-quarkus-00000 (package mapping from migration.yaml)
 
 **Absorbs**: com.redhat.coolstore.* classes (will be harvested in subsequent stories)
 
@@ -68,35 +68,9 @@ Create verification tests to ensure platform modernization succeeded:
 - Package namespace migrated successfully to `com.demo`
 - Configuration preservation verified
 
-**Finds**: springboot-parent-pom-to-quarkus-00000, javaee-pom-to-quarkus-00010, springboot-properties-to-quarkus-00000
+**Findings**: springboot-parent-pom-to-quarkus-00000, javaee-pom-to-quarkus-00010, springboot-properties-to-quarkus-00000
 
 **Package verification**: com.redhat.coolstore → com.demo (full prefix replacement as specified in migration.yaml)
-
----
-
-#### T-006: Scope platform modernization to build infrastructure only  
-|**Class: infer**  
-|**Target design**: → Platform modernization only, no service code conversion
-
-This story focuses exclusively on build configuration modernization: POM dependencies, Maven plugins, Java version, and package namespace migration. All source code, services, REST endpoints, and business logic remain in their legacy form until subsequent service-focused stories.
-
-|**Platform scope**: Build infrastructure modernization only (POM, plugins, namespace)
-|**Service scope**: Deferred to subsequent stories for conversion
-|**Task substance**: Platform modernization tasks (T-001 through T-005) cover all code paths this story changes
-
-|**Finds**: Platform modernization scope per story planning
-
-|**Ownership declarations**:
-- **Absorbs**: src/main/java/com/redhat/coolstore/CartServiceApplication.java (removed during platform modernization)
-- **Owns**: All service layer files in legacy package namespace (deferred conversion)
-  - src/main/java/com/redhat/coolstore/service/ShoppingCartServiceImpl.java
-  - src/main/java/com/redhat/coolstore/service/PromoService.java  
-  - src/main/java/com/redhat/coolstore/service/ShippingService.java
-  - src/main/java/com/redhat/coolstore/rest/CartEndpoint.java
-  - src/main/java/com/redhat/coolstore/rest/JerseyConfig.java
-  - src/test/java/com/redhat/coolstore/service/ShoppingCartServiceTest.java
-
-|**Target design**: → No service code changes in this story
 
 ---
 
@@ -105,7 +79,7 @@ This story focuses exclusively on build configuration modernization: POM depende
 Tasks follow the conversion order from migration/dependency-order.md: extensions and BOM first, then dependencies, then configuration, then tests. Rewrite tasks establish the mechanical foundation before infer tasks make architectural decisions.
 
 **All rewrite tasks (T-001 through T-004)** establish the platform foundation.  
-**All infer tasks (T-005 through T-006)** make architectural decisions and verification for subsequent stories.
+**All infer tasks (T-005)** make architectural decisions and verification for subsequent stories.
 
 **S-INFTEST compliance**: After the first infer task (T-005), remaining tasks are also classified as infer, ensuring consistent task type throughout the architectural decision phase.
 
