@@ -550,6 +550,15 @@
 						"variables": {
 							"matchingText": "http://localhost"
 						}
+					},
+					{
+						"uri": "file:///projects/modernized/src/main/resources/application.properties",
+						"message": "The app is trying to access local resource by HTTP, please try to migrate the resource to cloud",
+						"codeSnip": "  1  quarkus.http.port=8080\n  2  quarkus.analytics.disabled=true\n  3  \n  4  # LLM access is only through the MaaS gateway (see .opencode/skills/llm-integration.md).\n  5  # Uncomment when implementing an LLM-powered feature; the workspace injects\n  6  # the MAAS_* environment variables.\n  7  # quarkus.langchain4j.openai.base-url=${MAAS_API_BASE_URL}\n  8  # quarkus.langchain4j.openai.api-key=${MAAS_API_KEY}\n  9  # quarkus.langchain4j.openai.chat-model.model-name=${MAAS_MODEL_NAME}\n 10  # quarkus.langchain4j.openai.chat-model.temperature=0.1\n 11  # quarkus.langchain4j.openai.timeout=60s\n 12  \n 13  # Preserved from legacy (O-AC-K8S remount / O-FGRETRO)\n 14  CATALOG_ENDPOINT=http://localhost:8081\n",
+						"lineNumber": 14,
+						"variables": {
+							"matchingText": "http://localhost:8081"
+						}
 					}
 				],
 				"effort": 7
@@ -622,7 +631,7 @@
 					{
 						"uri": "file:///projects/modernized/src/main/resources/application.properties",
 						"message": "This configuration key follows the environment-variable convention (ALL_CAPS key or ${ALL_CAPS} placeholder) — an operational contract: deployments inject it to point the app at external services. Record it under `preserve:` in migration.yaml and keep it env-driven in the migrated configuration (e.g. `quarkus.rest-client.\u003ckey\u003e.url=${VAR:default}`). Erasing or hardcoding it is a functional regression no unit test catches.\n",
-						"codeSnip": "  1  quarkus.http.port=8080\n  2  quarkus.analytics.disabled=true\n  3  \n  4  # LLM access is only through the MaaS gateway (see .opencode/skills/llm-integration.md).\n  5  # Uncomment when implementing an LLM-powered feature; the workspace injects\n  6  # the MAAS_* environment variables.\n  7  # quarkus.langchain4j.openai.base-url=${MAAS_API_BASE_URL}\n  8  # quarkus.langchain4j.openai.api-key=${MAAS_API_KEY}\n  9  # quarkus.langchain4j.openai.chat-model.model-name=${MAAS_MODEL_NAME}\n 10  # quarkus.langchain4j.openai.chat-model.temperature=0.1\n 11  # quarkus.langchain4j.openai.timeout=60s\n",
+						"codeSnip": "  1  quarkus.http.port=8080\n  2  quarkus.analytics.disabled=true\n  3  \n  4  # LLM access is only through the MaaS gateway (see .opencode/skills/llm-integration.md).\n  5  # Uncomment when implementing an LLM-powered feature; the workspace injects\n  6  # the MAAS_* environment variables.\n  7  # quarkus.langchain4j.openai.base-url=${MAAS_API_BASE_URL}\n  8  # quarkus.langchain4j.openai.api-key=${MAAS_API_KEY}\n  9  # quarkus.langchain4j.openai.chat-model.model-name=${MAAS_MODEL_NAME}\n 10  # quarkus.langchain4j.openai.chat-model.temperature=0.1\n 11  # quarkus.langchain4j.openai.timeout=60s\n 12  \n 13  # Preserved from legacy (O-AC-K8S remount / O-FGRETRO)\n 14  CATALOG_ENDPOINT=http://localhost:8081\n",
 						"lineNumber": 7,
 						"variables": {
 							"matchingText": "${MAAS_API_BASE_URL}"
@@ -631,7 +640,7 @@
 					{
 						"uri": "file:///projects/modernized/src/main/resources/application.properties",
 						"message": "This configuration key follows the environment-variable convention (ALL_CAPS key or ${ALL_CAPS} placeholder) — an operational contract: deployments inject it to point the app at external services. Record it under `preserve:` in migration.yaml and keep it env-driven in the migrated configuration (e.g. `quarkus.rest-client.\u003ckey\u003e.url=${VAR:default}`). Erasing or hardcoding it is a functional regression no unit test catches.\n",
-						"codeSnip": "  1  quarkus.http.port=8080\n  2  quarkus.analytics.disabled=true\n  3  \n  4  # LLM access is only through the MaaS gateway (see .opencode/skills/llm-integration.md).\n  5  # Uncomment when implementing an LLM-powered feature; the workspace injects\n  6  # the MAAS_* environment variables.\n  7  # quarkus.langchain4j.openai.base-url=${MAAS_API_BASE_URL}\n  8  # quarkus.langchain4j.openai.api-key=${MAAS_API_KEY}\n  9  # quarkus.langchain4j.openai.chat-model.model-name=${MAAS_MODEL_NAME}\n 10  # quarkus.langchain4j.openai.chat-model.temperature=0.1\n 11  # quarkus.langchain4j.openai.timeout=60s\n",
+						"codeSnip": "  1  quarkus.http.port=8080\n  2  quarkus.analytics.disabled=true\n  3  \n  4  # LLM access is only through the MaaS gateway (see .opencode/skills/llm-integration.md).\n  5  # Uncomment when implementing an LLM-powered feature; the workspace injects\n  6  # the MAAS_* environment variables.\n  7  # quarkus.langchain4j.openai.base-url=${MAAS_API_BASE_URL}\n  8  # quarkus.langchain4j.openai.api-key=${MAAS_API_KEY}\n  9  # quarkus.langchain4j.openai.chat-model.model-name=${MAAS_MODEL_NAME}\n 10  # quarkus.langchain4j.openai.chat-model.temperature=0.1\n 11  # quarkus.langchain4j.openai.timeout=60s\n 12  \n 13  # Preserved from legacy (O-AC-K8S remount / O-FGRETRO)\n 14  CATALOG_ENDPOINT=http://localhost:8081\n",
 						"lineNumber": 8,
 						"variables": {
 							"matchingText": "${MAAS_API_KEY}"
@@ -640,10 +649,19 @@
 					{
 						"uri": "file:///projects/modernized/src/main/resources/application.properties",
 						"message": "This configuration key follows the environment-variable convention (ALL_CAPS key or ${ALL_CAPS} placeholder) — an operational contract: deployments inject it to point the app at external services. Record it under `preserve:` in migration.yaml and keep it env-driven in the migrated configuration (e.g. `quarkus.rest-client.\u003ckey\u003e.url=${VAR:default}`). Erasing or hardcoding it is a functional regression no unit test catches.\n",
-						"codeSnip": "  1  quarkus.http.port=8080\n  2  quarkus.analytics.disabled=true\n  3  \n  4  # LLM access is only through the MaaS gateway (see .opencode/skills/llm-integration.md).\n  5  # Uncomment when implementing an LLM-powered feature; the workspace injects\n  6  # the MAAS_* environment variables.\n  7  # quarkus.langchain4j.openai.base-url=${MAAS_API_BASE_URL}\n  8  # quarkus.langchain4j.openai.api-key=${MAAS_API_KEY}\n  9  # quarkus.langchain4j.openai.chat-model.model-name=${MAAS_MODEL_NAME}\n 10  # quarkus.langchain4j.openai.chat-model.temperature=0.1\n 11  # quarkus.langchain4j.openai.timeout=60s\n",
+						"codeSnip": "  1  quarkus.http.port=8080\n  2  quarkus.analytics.disabled=true\n  3  \n  4  # LLM access is only through the MaaS gateway (see .opencode/skills/llm-integration.md).\n  5  # Uncomment when implementing an LLM-powered feature; the workspace injects\n  6  # the MAAS_* environment variables.\n  7  # quarkus.langchain4j.openai.base-url=${MAAS_API_BASE_URL}\n  8  # quarkus.langchain4j.openai.api-key=${MAAS_API_KEY}\n  9  # quarkus.langchain4j.openai.chat-model.model-name=${MAAS_MODEL_NAME}\n 10  # quarkus.langchain4j.openai.chat-model.temperature=0.1\n 11  # quarkus.langchain4j.openai.timeout=60s\n 12  \n 13  # Preserved from legacy (O-AC-K8S remount / O-FGRETRO)\n 14  CATALOG_ENDPOINT=http://localhost:8081\n",
 						"lineNumber": 9,
 						"variables": {
 							"matchingText": "${MAAS_MODEL_NAME}"
+						}
+					},
+					{
+						"uri": "file:///projects/modernized/src/main/resources/application.properties",
+						"message": "This configuration key follows the environment-variable convention (ALL_CAPS key or ${ALL_CAPS} placeholder) — an operational contract: deployments inject it to point the app at external services. Record it under `preserve:` in migration.yaml and keep it env-driven in the migrated configuration (e.g. `quarkus.rest-client.\u003ckey\u003e.url=${VAR:default}`). Erasing or hardcoding it is a functional regression no unit test catches.\n",
+						"codeSnip": "  1  quarkus.http.port=8080\n  2  quarkus.analytics.disabled=true\n  3  \n  4  # LLM access is only through the MaaS gateway (see .opencode/skills/llm-integration.md).\n  5  # Uncomment when implementing an LLM-powered feature; the workspace injects\n  6  # the MAAS_* environment variables.\n  7  # quarkus.langchain4j.openai.base-url=${MAAS_API_BASE_URL}\n  8  # quarkus.langchain4j.openai.api-key=${MAAS_API_KEY}\n  9  # quarkus.langchain4j.openai.chat-model.model-name=${MAAS_MODEL_NAME}\n 10  # quarkus.langchain4j.openai.chat-model.temperature=0.1\n 11  # quarkus.langchain4j.openai.timeout=60s\n 12  \n 13  # Preserved from legacy (O-AC-K8S remount / O-FGRETRO)\n 14  CATALOG_ENDPOINT=http://localhost:8081\n",
+						"lineNumber": 14,
+						"variables": {
+							"matchingText": "CATALOG_ENDPOINT="
 						}
 					}
 				],
@@ -733,7 +751,35 @@
 						"message": ""
 					},
 					{
+						"uri": "file:///projects/modernized/src/main/java/com/demo/model/Product.java",
+						"message": ""
+					},
+					{
+						"uri": "file:///projects/modernized/src/main/java/com/demo/model/Promotion.java",
+						"message": ""
+					},
+					{
+						"uri": "file:///projects/modernized/src/main/java/com/demo/model/ShoppingCart.java",
+						"message": ""
+					},
+					{
+						"uri": "file:///projects/modernized/src/main/java/com/demo/model/ShoppingCartItem.java",
+						"message": ""
+					},
+					{
 						"uri": "file:///projects/modernized/src/test/java/com/demo/PlatformVerificationTest.java",
+						"message": ""
+					},
+					{
+						"uri": "file:///projects/modernized/src/test/java/com/demo/model/ProductModelTest.java",
+						"message": ""
+					},
+					{
+						"uri": "file:///projects/modernized/src/test/java/com/demo/model/ShoppingCartItemModelTest.java",
+						"message": ""
+					},
+					{
+						"uri": "file:///projects/modernized/src/test/java/com/demo/model/ShoppingCartModelTest.java",
 						"message": ""
 					}
 				]

@@ -64,3 +64,48 @@ Appended by the Hermes orchestrator after every task (see
    - *Status*: Scheduled for post-M5 cleanup phase
 
 **Analysis Complete** - Ready for preflight sensor verification.
+
+## M5 EVALUATION COMPLETE (Updated Findings Delta)
+
+**Final Migration Status:**
+- BEFORE: 24 violations, 47 incidents  
+- AFTER: 7 violations, 13 incidents
+- **RESOLVED: 17 violations, 34 incidents (70.8% reduction)**
+
+### FINAL REMAINING FINDINGS (7 violations, 13 incidents):
+
+1. **demo-env-integration-00001** (5 incidents) → **GENUINE DEBT**: Environment-driven external configuration must be preserved
+   - *Explanation*: External configuration patterns need proper Quarkus configuration management
+   - *Status*: Requires follow-up migration work for configuration refactoring
+
+2. **localhost-http-00001** (3 incidents) → **GENUINE DEBT**: Local HTTP Calls detected
+   - *Explanation*: Hardcoded localhost URLs need externalization for proper deployment
+   - *Status*: Requires configuration management refactoring
+
+3. **jakarta-jaxrs-to-quarkus-00010** (1 incident) → **OWNED BY LATER STORY**: Replace jakarta JAX-RS dependency
+   - *Explanation*: JAX-RS dependency configuration pending finalization
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+4. **javaee-pom-to-quarkus-00030** (1 incident) → **OWNED BY LATER STORY**: Adopt Maven Compiler plugin
+   - *Explanation*: Maven compiler plugin configuration incomplete
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+5. **javaee-pom-to-quarkus-00050** (1 incident) → **OWNED BY LATER STORY**: Adopt Maven Failsafe plugin
+   - *Explanation*: Integration test plugin configuration pending
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+6. **springboot-metrics-to-quarkus-0100** (1 incident) → **OWNED BY LATER STORY**: Replace Micrometer dependency with Quarkus Microprofile metrics
+   - *Explanation*: Metrics library migration pending finalization
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+7. **springboot-metrics-to-quarkus-0200** (1 incident) → **OWNED BY LATER STORY**: Replace Micrometer code with Microprofile Metrics code
+   - *Explanation*: Metrics code migration needs completion
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+**Preflight Status:** ✅ GREEN (sensors.sh exited 0)
+- Harvest fidelity: GREEN
+- Sonar check: GREEN (new-code gate)
+- Milestone sensor: GREEN (clean verify + sonar[full], isolated repo)
+- Boot check: GREEN (Flyway + schema validation against dev DB)
+
+**M5 EVALUATION COMPLETE** - Ready for supervised factory ship.
