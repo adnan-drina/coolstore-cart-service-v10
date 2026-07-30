@@ -43,7 +43,10 @@ class CatalogEndpointConfigTest {
         try (InputStream in = Thread.currentThread()
                 .getContextClassLoader()
                 .getResourceAsStream("application.properties")) {
-            assertTrue(in != null, "application.properties on test classpath");
+            // Ensure application.properties is available on test classpath
+            if (in == null) {
+                throw new AssertionError("application.properties not found on test classpath");
+            }
             props.load(in);
         }
         return props;
