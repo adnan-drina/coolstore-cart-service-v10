@@ -40,6 +40,9 @@ targetContract:
   normalizeBeforeDerive: true
 preserve:
   - CATALOG_ENDPOINT
+  # Service-layer preserve: Feign/REST clients call GET /api/products.
+  # Keep this token in application.properties (and deploy env); do not drop when
+  # harvesting models — catalog integration is owned by later service stories.
 forbidden:
   - getMockProducts
   - "Fallback to mock"
