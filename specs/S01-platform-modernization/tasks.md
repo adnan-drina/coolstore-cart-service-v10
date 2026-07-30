@@ -74,12 +74,38 @@ Create verification tests to ensure platform modernization succeeded:
 
 ---
 
+#### T-006: Scope platform modernization to build infrastructure only  
+|**Class: infer**  
+|**Target design**: → Platform modernization only, no service code conversion
+
+This story focuses exclusively on build configuration modernization: POM dependencies, Maven plugins, Java version, and package namespace migration. All source code, services, REST endpoints, and business logic remain in their legacy form until subsequent service-focused stories.
+
+|**Platform scope**: Build infrastructure modernization only (POM, plugins, namespace)
+|**Service scope**: Deferred to subsequent stories for conversion
+|**Task substance**: Platform modernization tasks (T-001 through T-005) cover all code paths this story changes
+
+|**Finds**: Platform modernization scope per story planning
+
+|**Ownership declarations**:
+- **Absorbs**: src/main/java/com/redhat/coolstore/CartServiceApplication.java (removed during platform modernization)
+- **Owns**: All service layer files in legacy package namespace (deferred conversion)
+  - src/main/java/com/redhat/coolstore/service/ShoppingCartServiceImpl.java
+  - src/main/java/com/redhat/coolstore/service/PromoService.java  
+  - src/main/java/com/redhat/coolstore/service/ShippingService.java
+  - src/main/java/com/redhat/coolstore/rest/CartEndpoint.java
+  - src/main/java/com/redhat/coolstore/rest/JerseyConfig.java
+  - src/test/java/com/redhat/coolstore/service/ShoppingCartServiceTest.java
+
+|**Target design**: → No service code changes in this story
+
+---
+
 ## Task Ordering Justification
 
 Tasks follow the conversion order from migration/dependency-order.md: extensions and BOM first, then dependencies, then configuration, then tests. Rewrite tasks establish the mechanical foundation before infer tasks make architectural decisions.
 
 **All rewrite tasks (T-001 through T-004)** establish the platform foundation.  
-**All infer tasks (T-005)** make architectural decisions and verification for subsequent stories.
+**All infer tasks (T-005 through T-006)** make architectural decisions and verification for subsequent stories.
 
 **S-INFTEST compliance**: After the first infer task (T-005), remaining tasks are also classified as infer, ensuring consistent task type throughout the architectural decision phase.
 
