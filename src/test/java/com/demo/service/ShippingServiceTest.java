@@ -1,9 +1,11 @@
 package com.demo.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import com.demo.model.ShoppingCart;
 
@@ -11,154 +13,31 @@ class ShippingServiceTest {
 
     final ShippingService service = new ShippingService();
 
-    @Test
-    void calculatesTier1ShippingForCartTotalBelow25() {
+    @ParameterizedTest
+    @CsvSource({
+        "0, 2.99",
+        "19, 2.99",
+        "24.99, 2.99",
+        "25, 4.99",
+        "37, 4.99",
+        "49.99, 4.99",
+        "50, 6.99",
+        "62, 6.99",
+        "74.99, 6.99",
+        "75, 8.99",
+        "88, 8.99",
+        "99.99, 8.99",
+        "100, 10.99",
+        "500, 10.99",
+        "9999, 10.99"
+    })
+    void calculatesShippingTierForCartTotal(double cartTotal, double expectedShipping) {
         ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(0);
+        cart.setCartItemTotal(cartTotal);
 
         service.calculateShipping(cart);
 
-        assertEquals(2.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier1ShippingForCartTotal19() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(19);
-
-        service.calculateShipping(cart);
-
-        assertEquals(2.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier1ShippingForCartTotal24_99() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(24.99);
-
-        service.calculateShipping(cart);
-
-        assertEquals(2.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier2ShippingForCartTotal25() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(25);
-
-        service.calculateShipping(cart);
-
-        assertEquals(4.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier2ShippingForCartTotal37() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(37);
-
-        service.calculateShipping(cart);
-
-        assertEquals(4.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier2ShippingForCartTotal49_99() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(49.99);
-
-        service.calculateShipping(cart);
-
-        assertEquals(4.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier3ShippingForCartTotal50() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(50);
-
-        service.calculateShipping(cart);
-
-        assertEquals(6.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier3ShippingForCartTotal62() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(62);
-
-        service.calculateShipping(cart);
-
-        assertEquals(6.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier3ShippingForCartTotal74_99() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(74.99);
-
-        service.calculateShipping(cart);
-
-        assertEquals(6.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier4ShippingForCartTotal75() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(75);
-
-        service.calculateShipping(cart);
-
-        assertEquals(8.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier4ShippingForCartTotal88() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(88);
-
-        service.calculateShipping(cart);
-
-        assertEquals(8.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier4ShippingForCartTotal99_99() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(99.99);
-
-        service.calculateShipping(cart);
-
-        assertEquals(8.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier5ShippingForCartTotal100() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(100);
-
-        service.calculateShipping(cart);
-
-        assertEquals(10.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier5ShippingForCartTotal500() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(500);
-
-        service.calculateShipping(cart);
-
-        assertEquals(10.99, cart.getShippingTotal(), 0.001);
-    }
-
-    @Test
-    void calculatesTier5ShippingForCartTotal9999() {
-        ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(9999);
-
-        service.calculateShipping(cart);
-
-        assertEquals(10.99, cart.getShippingTotal(), 0.001);
+        assertEquals(expectedShipping, cart.getShippingTotal(), 0.001);
     }
 
     @Test
@@ -174,7 +53,7 @@ class ShippingServiceTest {
 
     @Test
     void doesNotSetShippingForNullCart() {
-        service.calculateShipping(null);
+        assertDoesNotThrow(() -> service.calculateShipping(null));
     }
 
     @Test
@@ -191,47 +70,24 @@ class ShippingServiceTest {
     @Test
     void overwritesExistingShippingTotal() {
         ShoppingCart cart = new ShoppingCart();
-        cart.setCartItemTotal(50);
-        cart.setShippingTotal(99.99);
+        cart.setCartItemTotal(30);
+        cart.setShippingTotal(99.0);
 
         service.calculateShipping(cart);
 
-        assertEquals(6.99, cart.getShippingTotal(), 0.001);
+        assertEquals(4.99, cart.getShippingTotal(), 0.001);
     }
 
     @Test
     void allShippingTiersCovered() {
-        assertAll("shipping tiers",
-            () -> {
-                ShoppingCart c = new ShoppingCart();
-                c.setCartItemTotal(0);
-                service.calculateShipping(c);
-                assertEquals(2.99, c.getShippingTotal(), 0.001, "tier 1");
-            },
-            () -> {
-                ShoppingCart c = new ShoppingCart();
-                c.setCartItemTotal(25);
-                service.calculateShipping(c);
-                assertEquals(4.99, c.getShippingTotal(), 0.001, "tier 2");
-            },
-            () -> {
-                ShoppingCart c = new ShoppingCart();
-                c.setCartItemTotal(50);
-                service.calculateShipping(c);
-                assertEquals(6.99, c.getShippingTotal(), 0.001, "tier 3");
-            },
-            () -> {
-                ShoppingCart c = new ShoppingCart();
-                c.setCartItemTotal(75);
-                service.calculateShipping(c);
-                assertEquals(8.99, c.getShippingTotal(), 0.001, "tier 4");
-            },
-            () -> {
-                ShoppingCart c = new ShoppingCart();
-                c.setCartItemTotal(100);
-                service.calculateShipping(c);
-                assertEquals(10.99, c.getShippingTotal(), 0.001, "tier 5");
-            }
-        );
+        double[][] cases = {
+            {0, 2.99}, {25, 4.99}, {50, 6.99}, {75, 8.99}, {100, 10.99}
+        };
+        for (double[] c : cases) {
+            ShoppingCart cart = new ShoppingCart();
+            cart.setCartItemTotal(c[0]);
+            service.calculateShipping(cart);
+            assertEquals(c[1], cart.getShippingTotal(), 0.001);
+        }
     }
 }
