@@ -197,6 +197,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (tmpCart != null) {
             cart.resetShoppingCartItemList();
             cart.setShoppingCartItemList(tmpCart.getShoppingCartItemList());
+            
+            // IMPORTANT: Price the cart after setting items to ensure totals are calculated
+            priceShoppingCart(cart);
+            cart.setShoppingCartItemList(dedupeCartItems(cart));
         }
 
         try {
