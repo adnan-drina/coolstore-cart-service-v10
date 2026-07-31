@@ -55,3 +55,7 @@ epoch,stage,attempt,class,action
 1785471267,m5-evaluate,2,success,commit
 1785471534,m5-ship,0,pipeline_succeeded,coolstore-cart-service-v10-push-7k7vn
 1785471545,m5-ship,0,acceptance_pass,route=200,products=4
+1785471815,T-001,0,already_complete,absent:CartServiceApplication
+1785471991,m5-evaluate,1,success,commit
+1785472219,m5-ship,0,pipeline_succeeded,coolstore-cart-service-v10-push-7k7vn
+1785472229,m5-ship,0,acceptance_pass,route=200,products=4
