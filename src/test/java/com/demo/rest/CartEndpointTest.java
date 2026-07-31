@@ -88,6 +88,15 @@ class CartEndpointTest {
     }
 
     @Test
+    void returnsBadRequestForNegativeQuantity() {
+        String cartId = getCartId();
+        given()
+            .when().post("/cart/" + cartId + "/1111/-1")
+            .then()
+            .statusCode(400);
+    }
+
+    @Test
     void returnsBadRequestForZeroQuantity() {
         String cartId = getCartId();
         given()

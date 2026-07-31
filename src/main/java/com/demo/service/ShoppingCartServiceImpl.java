@@ -35,21 +35,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShippingService shippingService;
     private final PromoService promoService;
+    private final CatalogService catalogService;
 
+    private static final long serialVersionUID = 1L;
+    
     Map<String, ShoppingCart> carts;
     Map<String, Product> productMap = new HashMap<>();
 
     @Inject
-    public ShoppingCartServiceImpl(ShippingService shippingService, 
-                                   PromoService promoService) {
+    public ShoppingCartServiceImpl(ShippingService shippingService,
+                                   PromoService promoService,
+                                   @RestClient CatalogService catalogService) {
         this.shippingService = shippingService;
         this.promoService = promoService;
+        this.catalogService = catalogService;
     }
 
-    @Inject
-    @RestClient
-    CatalogService catalogService;
-
+    
     @PostConstruct
     public void init() {
         LOG.info("Using local in-memory cache for cart data");
@@ -58,13 +60,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCart getShoppingCart(String cartId) {
-        if (!carts.containsKey(cartId)) {
-            ShoppingCart cart = new ShoppingCart(cartId);
-            carts.put(cartId, cart);
+        if (cartId == null || cartId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Cart ID cannot be null or empty");
+        }
+
+        boolean created = !carts.containsKey(cartId);
+        ShoppingCart cart = carts.computeIfAbsent(cartId, ShoppingCart::new);
+        if (created) {
             return cart;
         }
 
-        ShoppingCart cart = carts.get(cartId);
         priceShoppingCart(cart);
         carts.put(cartId, cart);
         return cart;
@@ -74,7 +79,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (sc != null) {
             initShoppingCartForPricing(sc);
 
-            if (sc.getShoppingCartItemList() != null && sc.getShoppingCartItemList().size() > 0) {
+            if (sc.getShoppingCartItemList() != null && !sc.getShoppingCartItemList().isEmpty()) {
                 promoService.applyCartItemPromotions(sc);
 
                 for (ShoppingCartItem sci : sc.getShoppingCartItemList()) {
@@ -114,12 +119,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public Product getProduct(String itemId) {
         if (!productMap.containsKey(itemId)) {
-            // Fetch and cache products. TODO: Cache should expire at some point!
+            // Fetch and cache products
             try {
                 List<Product> products = catalogService.getProducts();
                 productMap = products.stream().collect(Collectors.toMap(Product::getItemId, Function.identity()));
             } catch (Exception e) {
-                LOG.warn("Failed to fetch products from catalog service: {}", e.getMessage());
+                LOG.warn("Failed to fetch products from catalog service", e);
                 // Return empty map to avoid null pointer exceptions
                 productMap = new HashMap<>();
             }
@@ -181,7 +186,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             cart.setShoppingCartItemList(dedupeCartItems(cart));
         } catch (Exception ex) {
             cart.removeShoppingCartItem(sci);
-            throw ex;
+            throw new IllegalStateException("Pricing failed; item rolled back", ex);
         }
 
         carts.put(cartId, cart);
@@ -199,18 +204,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             cart.setShoppingCartItemList(new ArrayList<>(tmpCart.getShoppingCartItemList()));
         }
 
-        try {
-            priceShoppingCart(cart);
-            List<ShoppingCartItem> deduped = dedupeCartItems(cart);
-            // O-SETDEDUPE: do not replace with an empty dedupe when catalog miss
-            // drops every item (WireMock/productMap miss → size 0 / total 0).
-            if (!deduped.isEmpty()) {
-                cart.setShoppingCartItemList(deduped);
-            }
-            priceShoppingCart(cart);
-        } catch (Exception ex) {
-            throw ex;
+        priceShoppingCart(cart);
+        List<ShoppingCartItem> deduped = dedupeCartItems(cart);
+        // O-SETDEDUPE: do not replace with an empty dedupe when catalog miss
+        // drops every item (WireMock/productMap miss → size 0 / total 0).
+        if (!deduped.isEmpty()) {
+            cart.setShoppingCartItemList(deduped);
         }
+        priceShoppingCart(cart);
 
         carts.put(cartId, cart);
         return cart;
@@ -220,18 +221,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         List<ShoppingCartItem> result = new ArrayList<>();
         Map<String, Integer> quantityMap = new HashMap<>();
         for (ShoppingCartItem sci : sc.getShoppingCartItemList()) {
-            if (quantityMap.containsKey(sci.getProduct().getItemId())) {
-                quantityMap.put(sci.getProduct().getItemId(), quantityMap.get(sci.getProduct().getItemId()) + sci.getQuantity());
+            Integer existingQuantity = quantityMap.get(sci.getProduct().getItemId());
+            if (existingQuantity != null) {
+                quantityMap.put(sci.getProduct().getItemId(), existingQuantity + sci.getQuantity());
             } else {
                 quantityMap.put(sci.getProduct().getItemId(), sci.getQuantity());
             }
         }
 
-        for (String itemId : quantityMap.keySet()) {
+        for (Map.Entry<String, Integer> entry : quantityMap.entrySet()) {
+            String itemId = entry.getKey();
             Product p = getProduct(itemId);
             if (p != null) {
                 ShoppingCartItem newItem = new ShoppingCartItem();
-                newItem.setQuantity(quantityMap.get(itemId));
+                newItem.setQuantity(entry.getValue());
                 newItem.setPrice(p.getPrice());
                 newItem.setProduct(p);
                 result.add(newItem);

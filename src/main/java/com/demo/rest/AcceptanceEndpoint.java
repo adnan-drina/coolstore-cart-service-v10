@@ -3,7 +3,6 @@ package com.demo.rest;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -18,9 +17,11 @@ import com.demo.service.CatalogService;
 @ApplicationScoped
 public class AcceptanceEndpoint {
 
-    @Inject
-    @RestClient
-    CatalogService catalogService;
+    private final CatalogService catalogService;
+
+    public AcceptanceEndpoint(@RestClient CatalogService catalogService) {
+        this.catalogService = catalogService;
+    }
 
     @GET
     @Path("acceptance-check")
