@@ -37,7 +37,8 @@ class CartEndpointTest {
     }
 
     private String getCartId() {
-        return currentTestCartId;
+        // Unique id per call (O-TESTISO) — BeforeEach field alone makes source==target in set().
+        return "cart-" + UUID.randomUUID().toString().substring(0, 8);
     }
 
     // --- GET /cart/{cartId} ---
@@ -112,15 +113,19 @@ class CartEndpointTest {
     void setsCartContentsFromTempCart() {
         String sourceCartId = getCartId();
         String targetCartId = getCartId();
-        given().when().post("/cart/" + sourceCartId + "/1111/2");
+        given().when().post("/cart/" + sourceCartId + "/1111/2")
+            .then()
+            .statusCode(200)
+            .body("cartItemTotal", comparesEqualTo(new BigDecimal("2000.0")))
+            .body("shoppingCartItemList.size()", is(1));
 
         given()
             .when().post("/cart/" + targetCartId + "/" + sourceCartId)
             .then()
             .statusCode(200)
             .body("cartId", is(targetCartId))
-            .body("cartItemTotal", comparesEqualTo(new BigDecimal("2000.0")))
-            .body("shoppingCartItemList.size()", is(1));
+            .body("shoppingCartItemList.size()", is(1))
+            .body("cartItemTotal", comparesEqualTo(new BigDecimal("2000.0")));
     }
 
     // --- DELETE /cart/{cartId}/{itemId}/{quantity} ---

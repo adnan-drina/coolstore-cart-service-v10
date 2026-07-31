@@ -1,12 +1,13 @@
 package com.demo.rest;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
-
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 public class CatalogWireMockResource implements QuarkusTestResourceLifecycleManager {
 
@@ -16,7 +17,7 @@ public class CatalogWireMockResource implements QuarkusTestResourceLifecycleMana
     public Map<String, String> start() {
         server = new WireMockServer(0);
         server.start();
-        server.stubFor(get(urlEqualTo("/"))
+        server.stubFor(get(urlEqualTo("/api/products"))
             .willReturn(okJson("[{"
                 + "\"itemId\":\"1111\",\"name\":\"Car\",\"desc\":\"Super car\",\"price\":1000"
                 + "},{"
@@ -27,6 +28,8 @@ public class CatalogWireMockResource implements QuarkusTestResourceLifecycleMana
 
     @Override
     public void stop() {
-        if (server != null) server.stop();
+        if (server != null) {
+            server.stop();
+        }
     }
 }

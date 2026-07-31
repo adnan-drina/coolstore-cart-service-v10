@@ -190,22 +190,24 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCart set(String cartId, String tmpId) {
-
         ShoppingCart cart = getShoppingCart(cartId);
         ShoppingCart tmpCart = getShoppingCart(tmpId);
 
         if (tmpCart != null) {
             cart.resetShoppingCartItemList();
-            cart.setShoppingCartItemList(tmpCart.getShoppingCartItemList());
-            
-            // IMPORTANT: Price the cart after setting items to ensure totals are calculated
-            priceShoppingCart(cart);
-            cart.setShoppingCartItemList(dedupeCartItems(cart));
+            // Copy items — do not share the source cart list reference.
+            cart.setShoppingCartItemList(new ArrayList<>(tmpCart.getShoppingCartItemList()));
         }
 
         try {
             priceShoppingCart(cart);
-            cart.setShoppingCartItemList(dedupeCartItems(cart));
+            List<ShoppingCartItem> deduped = dedupeCartItems(cart);
+            // O-SETDEDUPE: do not replace with an empty dedupe when catalog miss
+            // drops every item (WireMock/productMap miss → size 0 / total 0).
+            if (!deduped.isEmpty()) {
+                cart.setShoppingCartItemList(deduped);
+            }
+            priceShoppingCart(cart);
         } catch (Exception ex) {
             throw ex;
         }

@@ -52,3 +52,10 @@ STATUS: Ready for T-001 completion, then re-run T-002 or continue with remaining
 FILES MODIFIED: 10 Java files with package rename applied successfully.
 
 
+
+### RESOLVED — T-007 debt-freeze remount — 2026-07-31T02:34Z
+
+- Cause: O-FAILOPEN-DTO catch→List.of; getCartId() reused BeforeEach id (source==target).
+- Fix: acceptance returns products[]; CatalogService @Path /api/products; WireMock stub;
+  getCartId() unique per call; set() copy+dedupe guard.
+- FREEZE cleared; RESUME_STORY=S04 RESUME_RUN_BASE=de319e7.
