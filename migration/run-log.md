@@ -109,5 +109,68 @@ Appended by the Hermes orchestrator after every task (see
 - Milestone sensor: GREEN (clean verify + sonar[full], isolated repo)
 - Boot check: GREEN (Flyway + schema validation against dev DB)
 
-**M5 EVALUATION COMPLETE** - Ready for supervised factory ship.
+### FINAL FINDINGS SUMMARY (Updated After Re-analysis)
+
+**Final Migration Status:**
+- BEFORE: 24 violations, 47 incidents  
+- AFTER: 8 violations, 16 incidents
+- **RESOLVED: 16 violations, 31 incidents (66.7% reduction)**
+
+### DETAILED REMAINING FINDINGS (8 violations, 16 incidents):
+
+1. **demo-env-integration-00001** (6 incidents) → **GENUINE DEBT**: Environment-driven external configuration must be preserved
+   - *Explanation*: External configuration patterns need proper Quarkus configuration management
+   - *Status*: Requires follow-up migration work for configuration refactoring
+
+2. **localhost-http-00001** (4 incidents) → **GENUINE DEBT**: Local HTTP Calls detected
+   - *Explanation*: Hardcoded localhost URLs need externalization for proper deployment
+   - *Status*: Requires configuration management refactoring
+
+3. **demo-inmemory-state-00001** (1 incident) → **GENUINE DEBT**: In-memory collection state in service
+   - *Explanation*: Cloud readiness verification needed for in-memory state
+   - *Status*: Requires state management refactoring
+
+4. **jakarta-jaxrs-to-quarkus-00010** (1 incident) → **OWNED BY LATER STORY**: Replace jakarta JAX-RS dependency
+   - *Explanation*: JAX-RS dependency configuration pending finalization
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+5. **javaee-pom-to-quarkus-00030** (1 incident) → **OWNED BY LATER STORY**: Adopt Maven Compiler plugin
+   - *Explanation*: Maven compiler plugin configuration incomplete
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+6. **javaee-pom-to-quarkus-00050** (1 incident) → **OWNED BY LATER STORY**: Adopt Maven Failsafe plugin
+   - *Explanation*: Integration test plugin configuration pending
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+7. **springboot-metrics-to-quarkus-0100** (1 incident) → **OWNED BY LATER STORY**: Replace Micrometer dependency
+   - *Explanation*: Metrics library migration pending finalization
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+8. **springboot-metrics-to-quarkus-0200** (1 incident) → **OWNED BY LATER STORY**: Replace Micrometer code
+   - *Explanation*: Metrics code migration needs completion
+   - *Status*: Scheduled for post-M5 cleanup phase
+
+### PREFLIGHT SENSOR RESULTS
+
+**Preflight Status:** ❌ **RED** (sensors.sh exited 1)
+
+**Issues Identified:**
+1. **Coverage Gate RED**: 40.8% new-code coverage (gate requires ≥ 80%)
+   - CartEndpoint.java: 0.0% coverage, 38 uncovered new lines
+   - ShoppingCartServiceImpl.java: 0.0% coverage, 118 uncovered new lines
+   - AcceptanceEndpoint.java: 100.0% coverage ✓
+   - Other model classes: 100.0% coverage ✓
+
+2. **Sonar Quality Gate RED**: Multiple new-code violations
+   - java:S1135 (1): Missing TODO comments
+   - java:S1155 (1): Redundant comparisons
+   - java:S1192 (2): String literals should not be duplicated
+   - java:S2737 (1): Logging levels should not be used conditionally
+   - java:S2864 (1): Unused import
+   - java:S3824 (1): Boolean expressions should not be compared to true
+   - java:S6813 (3): CDI annotations should be properly used
+
+**Preflight Analysis Complete** - Factory ship requires correction of RED status.
+
+**M5 EVALUATION COMPLETE** - Ready for supervised factory ship with explicit RED status correction needed.
 | T-002 | rewrite | 2 | COMPLETED | src/main/java/com/demo/rest/JerseyConfig.java, src/main/java/com/demo/rest/CartEndpoint.java, src/main/java/com/demo/rest/package-info.java, src/main/java/com/demo/service/CatalogService.java, src/main/java/com/demo/service/ShoppingCartServiceImpl.java |
