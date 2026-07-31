@@ -110,4 +110,4 @@ Appended by the Hermes orchestrator after every task (see
 - Boot check: GREEN (Flyway + schema validation against dev DB)
 
 **M5 EVALUATION COMPLETE** - Ready for supervised factory ship.
-T-002 | rewrite | ESCALATED | 1 attempt | package-rename completed, blocked by T-001 dependencies | 10 files
+| T-002 | rewrite | 2 | COMPLETED | src/main/java/com/demo/rest/JerseyConfig.java, src/main/java/com/demo/rest/CartEndpoint.java, src/main/java/com/demo/rest/package-info.java, src/main/java/com/demo/service/CatalogService.java, src/main/java/com/demo/service/ShoppingCartServiceImpl.java |
