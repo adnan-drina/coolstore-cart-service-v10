@@ -1,7 +1,5 @@
 package com.demo.rest;
 
-import java.io.Serializable;
-
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -14,9 +12,7 @@ import com.demo.model.ShoppingCart;
 import com.demo.service.ShoppingCartService;
 
 @Path("/cart")
-public class CartEndpoint implements Serializable {
-
-    private static final long serialVersionUID = -7227732980791688773L;
+public class CartEndpoint {
 
     private ShoppingCartService shoppingCartService;
 
@@ -32,7 +28,7 @@ public class CartEndpoint implements Serializable {
     @Produces(MediaType.APPLICATION_JSON)
     public ShoppingCart add(@PathParam("cartId") String cartId,
                             @PathParam("itemId") String itemId,
-                            @PathParam("quantity") int quantity) throws Exception {
+                            @PathParam("quantity") int quantity) {
         return shoppingCartService.addItem(cartId, itemId, quantity);
     }
 
@@ -40,7 +36,7 @@ public class CartEndpoint implements Serializable {
     @Path("/{cartId}/{tmpId}")
     @Produces(MediaType.APPLICATION_JSON)
     public ShoppingCart set(@PathParam("cartId") String cartId,
-                            @PathParam("tmpId") String tmpId) throws Exception {
+                            @PathParam("tmpId") String tmpId) {
         return shoppingCartService.set(cartId, tmpId);
     }
 
@@ -49,7 +45,7 @@ public class CartEndpoint implements Serializable {
     @Produces(MediaType.APPLICATION_JSON)
     public ShoppingCart delete(@PathParam("cartId") String cartId,
                                @PathParam("itemId") String itemId,
-                               @PathParam("quantity") int quantity) throws Exception {
+                               @PathParam("quantity") int quantity) {
         return shoppingCartService.deleteItem(cartId, itemId, quantity);
     }
 
