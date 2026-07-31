@@ -110,3 +110,4 @@ Appended by the Hermes orchestrator after every task (see
 - Boot check: GREEN (Flyway + schema validation against dev DB)
 
 **M5 EVALUATION COMPLETE** - Ready for supervised factory ship.
+T-002 | rewrite | ESCALATED | 1 attempt | package-rename completed, blocked by T-001 dependencies | 10 files

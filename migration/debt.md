@@ -21,3 +21,33 @@ skill, better sensor) — never by weakening the sensors.
 - Milestone sensor GREEN after remount commits.
 - FREEZE cleared; outer-loop resume (O-NOWAIT).
 
+T-002: Package rename com.redhat.coolstore → com.demo
+
+COMPLETED:
+- Harvested CartEndpoint.java from migration/staging with package rename
+- Harvested JerseyConfig.java from migration/staging with package rename
+- Harvested all referenced model and service classes:
+  * ShoppingCart.java
+  * ShoppingCartItem.java
+  * Product.java
+  * ShoppingCartService.java
+  * ShoppingCartServiceImpl.java
+  * CatalogService.java
+  * PromoService.java
+  * ShippingService.java
+
+BLOCKED:
+- Compilation errors due to Spring framework dependencies still present
+- Files contain imports for:
+  * org.springframework.* (removed from CartEndpoint/JerseyConfig)
+  * org.glassfish.jersey.server (Jersey dependency not available)
+  * org.springframework.cloud.openfeign (Spring Cloud dependency)
+
+ROOT CAUSE:
+T-002 depends on T-001 (dependency management) being completed first.
+The staging files contain legacy Spring dependencies that need to be
+replaced with Quarkus equivalents before compilation succeeds.
+
+STATUS: Ready for T-001 completion, then re-run T-002 or continue with remaining tasks.
+FILES MODIFIED: 10 Java files with package rename applied successfully.
+
