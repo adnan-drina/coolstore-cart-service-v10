@@ -73,6 +73,8 @@ own story.)
 
 CartEndpoint (S04) remains JAX-RS with session management. Service interfaces and core services (S03) are already modernized to CDI. Domain models (S02) remain unchanged. CartServiceApplication remains Spring Boot bootstrap until S06. All REST endpoints continue using the modernized ShoppingCartService interface.
 
+Service interface methods and core services (PromoService, ShippingService, CatalogService) remain in their S03-converted @ApplicationScoped CDI state. Do NOT re-modernize services already converted to Quarkus CDI in S03.
+
 ## Class roles & target contract (from architecture-profile §7)
 
 For each in-scope class, its role and — for REDESIGN classes — the target

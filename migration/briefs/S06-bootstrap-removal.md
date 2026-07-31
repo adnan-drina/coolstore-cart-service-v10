@@ -45,6 +45,8 @@ own story.)
 
 All application components are already modernized: domain models (S02), services (S03-S05), and REST endpoints (S04). This story only removes the bootstrap class and relies on Quarkus's native application model. No source code functionality changes.
 
+Service implementations and REST endpoints remain in their S04-S05 converted state. Do NOT modify ShoppingCartServiceImpl, CartEndpoint, or other already-modernized components.
+
 ## Class roles & target contract (from architecture-profile §7)
 
 For each in-scope class, its role and — for REDESIGN classes — the target
