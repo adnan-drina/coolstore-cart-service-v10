@@ -5,10 +5,10 @@
 Autonomous migration of coolstore-cart-service-v10:
 success: shipped, route 200, 4 products. Findings delta and per-task detail: migration/run-log.md;
 debt: migration/debt.md. Orchestrator custom:maas-m2/minimax-m2,
-worker qwen27b/qwen3-6-27b, 31 model sessions.
+worker qwen27b/qwen3-6-27b, 33 model sessions.
 
 - Outcome: success: shipped, route 200, 4 products
-- Supervisor version: ba7c145a; run base: 6051211745885e81b6edb6bf6d7135669b534517
+- Supervisor version: ba7c145a; run base: 8a054f1524456d52490958bfb15eba68e448c364
 - Orchestrator: custom:maas-m2/minimax-m2; worker: qwen27b/qwen3-6-27b
 
 ## Sessions
@@ -46,23 +46,25 @@ worker qwen27b/qwen3-6-27b, 31 model sessions.
 | T-002-a1p0 | 604 | rc=137 |
 | m5-evaluate-a1p0 | 18 | rc=0 |
 | m5-evaluate-a2p0 | 71 | rc=0 |
+| retro | 47 | rc=0 |
+| m5-evaluate-a1p0 | 98 | rc=0 |
 
 - Escalations (KPI, from supervisor events): 0 (untested: 0)
 
 ## Classified events
 
 ```
-     13 success
+     14 success
       7 sensor_red_post_commit
+      7 pipeline_succeeded
       7 no_commit
-      6 pipeline_succeeded
-      5 already_complete
+      6 already_complete
       3 style_autofix
       3 story_gate_pass
+      3 acceptance_pass
       2 preflight_red
       2 later_story_class
       2 debt_recorded
-      2 acceptance_pass
       1 sfix_committed_still_red
       1 quota
       1 orphan_worker
