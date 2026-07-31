@@ -46,3 +46,12 @@ epoch,stage,attempt,class,action
 1785467802,deployfix-r1,1,success,commit
 1785468024,m5-ship,0,pipeline_succeeded,coolstore-cart-service-v10-push-nvg2w
 1785468034,m5-ship,0,acceptance_pass,route=200,products=4
+1785469694,T-001,1,success,commit
+1785470756,T-002,1,success,commit
+1785470792,T-003,0,already_complete,CATALOG_ENDPOINT
+1785470943,T-003,0,sensor_red_post_commit,verify
+1785471113,T-003,0,style_autofix,resolved
+1785471196,m5-evaluate,1,no_commit,retrying
+1785471267,m5-evaluate,2,success,commit
+1785471534,m5-ship,0,pipeline_succeeded,coolstore-cart-service-v10-push-7k7vn
+1785471545,m5-ship,0,acceptance_pass,route=200,products=4
