@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,8 +40,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private static final long serialVersionUID = 1L;
     
-    Map<String, ShoppingCart> carts;
-    Map<String, Product> productMap = new HashMap<>();
+    private final ConcurrentHashMap<String, ShoppingCart> carts = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Product> productMap = new ConcurrentHashMap<>();
 
     @Inject
     public ShoppingCartServiceImpl(ShippingService shippingService,
@@ -55,7 +56,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @PostConstruct
     public void init() {
         LOG.info("Using local in-memory cache for cart data");
-        carts = new HashMap<>();
+        // Carts are initialized as empty ConcurrentHashMap - no need to reassign
     }
 
     @Override
@@ -64,15 +65,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             throw new IllegalArgumentException("Cart ID cannot be null or empty");
         }
 
-        boolean created = !carts.containsKey(cartId);
-        ShoppingCart cart = carts.computeIfAbsent(cartId, ShoppingCart::new);
-        if (created) {
-            return cart;
-        }
-
-        priceShoppingCart(cart);
-        carts.put(cartId, cart);
-        return cart;
+        return carts.compute(cartId, (key, existing) -> {
+            if (existing != null) {
+                priceShoppingCart(existing);
+                return existing;
+            }
+            return new ShoppingCart(cartId);
+        });
     }
 
     public void priceShoppingCart(ShoppingCart sc) {
@@ -118,103 +117,132 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public Product getProduct(String itemId) {
-        if (!productMap.containsKey(itemId)) {
-            // Fetch and cache products
+        // Check cache first
+        Product cached = productMap.get(itemId);
+        if (cached != null) {
+            return cached;
+        }
+        
+        // Bounded refresh: fetch and cache all products, but avoid concurrent refreshes
+        synchronized (productMap) {
+            // Double-check inside synchronized block
+            cached = productMap.get(itemId);
+            if (cached != null) {
+                return cached;
+            }
+            
+            // Fetch and cache all products
             try {
                 List<Product> products = catalogService.getProducts();
-                productMap = products.stream().collect(Collectors.toMap(Product::getItemId, Function.identity()));
+                Map<String, Product> newProductMap = products.stream()
+                    .collect(Collectors.toMap(Product::getItemId, Function.identity()));
+                
+                // Merge with existing cache (no-clear-on-miss behavior)
+                productMap.putAll(newProductMap);
+                
+                return productMap.get(itemId);
             } catch (Exception e) {
                 LOG.warn("Failed to fetch products from catalog service", e);
-                // Return empty map to avoid null pointer exceptions
-                productMap = new HashMap<>();
+                // Return null on failure - no-clear-on-miss behavior preserved
+                return null;
             }
         }
-
-        return productMap.get(itemId);
     }
 
     @Override
     public ShoppingCart deleteItem(String cartId, String itemId, int quantity) {
-        List<ShoppingCartItem> toRemoveList = new ArrayList<>();
+        return carts.compute(cartId, (key, cart) -> {
+            if (cart == null) {
+                return null;
+            }
+            
+            List<ShoppingCartItem> toRemoveList = new ArrayList<>();
 
-        ShoppingCart cart = getShoppingCart(cartId);
+            cart.getShoppingCartItemList().stream()
+                    .filter(sci -> sci.getProduct().getItemId().equals(itemId))
+                    .forEach(sci -> {
+                        if (quantity >= sci.getQuantity()) {
+                            toRemoveList.add(sci);
+                        } else {
+                            sci.setQuantity(sci.getQuantity() - quantity);
+                        }
+                    });
 
-        cart.getShoppingCartItemList().stream()
-                .filter(sci -> sci.getProduct().getItemId().equals(itemId))
-                .forEach(sci -> {
-                    if (quantity >= sci.getQuantity()) {
-                        toRemoveList.add(sci);
-                    } else {
-                        sci.setQuantity(sci.getQuantity() - quantity);
-                    }
-                });
-
-        toRemoveList.forEach(cart::removeShoppingCartItem);
-        priceShoppingCart(cart);
-        carts.put(cartId, cart);
-
-        return cart;
+            toRemoveList.forEach(cart::removeShoppingCartItem);
+            priceShoppingCart(cart);
+            return cart;
+        });
     }
 
     @Override
     public ShoppingCart checkout(String cartId) {
-        ShoppingCart cart = getShoppingCart(cartId);
-        cart.resetShoppingCartItemList();
-        priceShoppingCart(cart);
-        carts.put(cartId, cart);
-        return cart;
+        return carts.compute(cartId, (key, cart) -> {
+            if (cart == null) {
+                return null;
+            }
+            cart.resetShoppingCartItemList();
+            priceShoppingCart(cart);
+            return cart;
+        });
     }
 
     @Override
     public ShoppingCart addItem(String cartId, String itemId, int quantity) {
-        ShoppingCart cart = getShoppingCart(cartId);
-        Product product = getProduct(itemId);
+        return carts.compute(cartId, (key, cart) -> {
+            if (cart == null) {
+                cart = new ShoppingCart(cartId);
+            }
+            
+            Product product = getProduct(itemId);
 
-        if (product == null) {
-            LOG.warn("Invalid product {} request to get added to the shopping cart. No product added", itemId);
+            if (product == null) {
+                LOG.warn("Invalid product {} request to get added to the shopping cart. No product added", itemId);
+                return cart;
+            }
+
+            ShoppingCartItem sci = new ShoppingCartItem();
+            sci.setProduct(product);
+            sci.setQuantity(quantity);
+            sci.setPrice(product.getPrice());
+            cart.addShoppingCartItem(sci);
+
+            try {
+                priceShoppingCart(cart);
+                cart.setShoppingCartItemList(dedupeCartItems(cart));
+            } catch (Exception ex) {
+                cart.removeShoppingCartItem(sci);
+                throw new IllegalStateException("Pricing failed; item rolled back", ex);
+            }
+
             return cart;
-        }
-
-        ShoppingCartItem sci = new ShoppingCartItem();
-        sci.setProduct(product);
-        sci.setQuantity(quantity);
-        sci.setPrice(product.getPrice());
-        cart.addShoppingCartItem(sci);
-
-        try {
-            priceShoppingCart(cart);
-            cart.setShoppingCartItemList(dedupeCartItems(cart));
-        } catch (Exception ex) {
-            cart.removeShoppingCartItem(sci);
-            throw new IllegalStateException("Pricing failed; item rolled back", ex);
-        }
-
-        carts.put(cartId, cart);
-        return cart;
+        });
     }
 
     @Override
     public ShoppingCart set(String cartId, String tmpId) {
-        ShoppingCart cart = getShoppingCart(cartId);
-        ShoppingCart tmpCart = getShoppingCart(tmpId);
+        return carts.compute(cartId, (key, cart) -> {
+            if (cart == null) {
+                cart = new ShoppingCart(cartId);
+            }
+            
+            ShoppingCart tmpCart = carts.get(tmpId);
 
-        if (tmpCart != null) {
-            cart.resetShoppingCartItemList();
-            // Copy items — do not share the source cart list reference.
-            cart.setShoppingCartItemList(new ArrayList<>(tmpCart.getShoppingCartItemList()));
-        }
+            if (tmpCart != null) {
+                cart.resetShoppingCartItemList();
+                // Copy items — do not share the source cart list reference.
+                cart.setShoppingCartItemList(new ArrayList<>(tmpCart.getShoppingCartItemList()));
+            }
 
-        priceShoppingCart(cart);
-        List<ShoppingCartItem> deduped = dedupeCartItems(cart);
-        // O-SETDEDUPE: do not replace with an empty dedupe when catalog miss
-        // drops every item (WireMock/productMap miss → size 0 / total 0).
-        if (!deduped.isEmpty()) {
-            cart.setShoppingCartItemList(deduped);
-        }
-        priceShoppingCart(cart);
-
-        carts.put(cartId, cart);
-        return cart;
+            priceShoppingCart(cart);
+            List<ShoppingCartItem> deduped = dedupeCartItems(cart);
+            // O-SETDEDUPE: do not replace with an empty dedupe when catalog miss
+            // drops every item (WireMock/productMap miss → size 0 / total 0).
+            if (!deduped.isEmpty()) {
+                cart.setShoppingCartItemList(deduped);
+            }
+            priceShoppingCart(cart);
+            return cart;
+        });
     }
 
     List<ShoppingCartItem> dedupeCartItems(ShoppingCart sc) {
