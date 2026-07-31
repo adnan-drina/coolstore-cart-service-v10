@@ -174,3 +174,4 @@ Appended by the Hermes orchestrator after every task (see
 
 **M5 EVALUATION COMPLETE** - Ready for supervised factory ship with explicit RED status correction needed.
 | T-002 | rewrite | 2 | COMPLETED | src/main/java/com/demo/rest/JerseyConfig.java, src/main/java/com/demo/rest/CartEndpoint.java, src/main/java/com/demo/rest/package-info.java, src/main/java/com/demo/service/CatalogService.java, src/main/java/com/demo/service/ShoppingCartServiceImpl.java |
+T-001: Test migration to Quarkus - Class rewrite - SUCCESS - Files: src/test/java/com/demo/service/ShoppingCartServiceTest.java, src/test/java/com/demo/CartServiceBoundaryTest.java, src/test/java/com/demo/ProductsObjectMother.java, pom.xml
