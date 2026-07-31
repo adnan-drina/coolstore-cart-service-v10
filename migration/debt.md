@@ -51,3 +51,7 @@ replaced with Quarkus equivalents before compilation succeeds.
 STATUS: Ready for T-001 completion, then re-run T-002 or continue with remaining tasks.
 FILES MODIFIED: 10 Java files with package rename applied successfully.
 
+
+## T-005 — task RED
+- head: 347047a
+- reason: sensor-fix did not clear task
