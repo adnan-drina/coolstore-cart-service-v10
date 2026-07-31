@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @QuarkusTest
-public class ShoppingCartServiceTest {
+class ShoppingCartServiceTest {
 
     @InjectMock
     @RestClient
@@ -31,7 +31,7 @@ public class ShoppingCartServiceTest {
     }
 
     @Test
-    public void should_get_initialized_shopping_cart_in_case_of_not_exists() {
+    void should_get_initialized_shopping_cart_in_case_of_not_exists() {
         final ShoppingCart shoppingCart = shoppingCartService.getShoppingCart("cart-init-empty");
 
         assertThat(shoppingCart)
@@ -42,7 +42,7 @@ public class ShoppingCartServiceTest {
     }
 
     @Test
-    public void should_calculate_price_of_cart() {
+    void should_calculate_price_of_cart() {
         final ShoppingCart shoppingCart = shoppingCartService.getShoppingCart("cart-price-1");
         ShoppingCartItem sci = new ShoppingCartItem();
         sci.setProduct(new Product("1111", "Car", "Super car", 1000));
@@ -60,7 +60,7 @@ public class ShoppingCartServiceTest {
     }
 
     @Test
-    public void should_get_product_id() {
+    void should_get_product_id() {
         final Product product = shoppingCartService.getProduct("2222");
 
         assertThat(product)

@@ -8,10 +8,10 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
-public class CartServiceBoundaryTest {
+class CartServiceBoundaryTest {
 
     @Test
-    public void should_add_item_to_shopping_cart() {
+    void should_add_item_to_shopping_cart() {
         final ShoppingCart shoppingCart = given()
             .when()
             .post("/cart/1/1111/2")
